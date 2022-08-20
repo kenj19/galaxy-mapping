@@ -14,7 +14,7 @@ import numpy as np
 import py21cmfast as p21c
 import matplotlib.pyplot as plt
 from data_manager import DataManager
-from utils import (binarize_boxes, get_n_i_halo_mass_coords)
+from utility_funcs import (binarize_boxes, get_n_i_halo_mass_coords)
 
 # Load in coeval boxes
 fname_coeval_boxes='/Users/kennedyj/PHYS_459/data/coeval_boxes/_128_128_rseed_variable_Jun27_results.h5'
