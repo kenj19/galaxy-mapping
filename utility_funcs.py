@@ -1,9 +1,9 @@
 import h5py
 import numpy as np
 
-def binarize_boxes(boxes, cutoff=0.9): # binarize ionized boxes, neutral maps to 1, ionized to 0
-	
-	'''
+def binarize_boxes(xH_boxes, cutoff=0.9): # binarize ionized boxes, neutral maps to 1, ionized to 0
+    
+    '''
     Function to binarize ionization fields, mapping voxels above
     the cutoff value to 1 (neutral) and voxels below the cutoff
     value to 0 (ionized).
@@ -19,9 +19,9 @@ def binarize_boxes(boxes, cutoff=0.9): # binarize ionized boxes, neutral maps to
     binarized_boxes = np.zeros(xH_boxes.shape)
     
     for i in range(num_box):
-    
-        sup_threshold_inds = (boxes[i] >= cutoff) # map to 1
-        sub_threshold_inds = (boxes[i] < cutoff) # map to 0
+        
+        sup_threshold_inds = (xH_boxes[i] >= cutoff) # map to 1
+        sub_threshold_inds = (xH_boxes[i] < cutoff) # map to 0
         binarized_boxes[i][sup_threshold_inds] = 1 
         binarized_boxes[i][sub_threshold_inds] = 0
         
@@ -34,12 +34,12 @@ def get_n_i_halo_mass_coords(halocoords, halomasses, gt_ionizedbox, pred_ionized
     found in the ionized and neutral regions of ionization field.
     ------------------------------------------------------------------------------
     halocoords: 
-            Coordinates of halos in box.
+         Coordinates of halos in box.
     halomasses:
             Masses of halos in box.
-    gt_ionizedbox: 
+    gt_ionizedbox:
             Ground-truth (21cmFAST output) ionization field. 
-    pred_ionizedbox: 
+    pred_ionizedbox:
             Predicted (U-Net output) ionization field. 
     save_name:
             Name to save .h5 to.
@@ -47,7 +47,7 @@ def get_n_i_halo_mass_coords(halocoords, halomasses, gt_ionizedbox, pred_ionized
             DIM//HII_DIM, default = 3.
     ------------------------------------------------------------------------------
     ''' 
-    
+     
     # Need to scale down dim from high to low res
     halo_low_res_coords = halocoords // scale
     num_halos = len(halo_masses)
@@ -141,4 +141,3 @@ def get_n_i_halo_mass_coords(halocoords, halomasses, gt_ionizedbox, pred_ionized
     print(f"\n ======= All datasets created, saved to {save_name}. ======= \n")
 
     hf.close()
-    
