@@ -154,3 +154,39 @@ def get_n_i_halo_mass_coords(halocoords, halomasses, gt_ionizedbox, pred_ionized
     print(f"\n ======= All datasets created, saved to {save_name}. ======= \n")
 
     hf.close()
+
+def save_dset_to_hf(filename: str, data: dict,
+                    attrs: Optional[dict] = None):
+    """
+    Author: @j-c-carr
+
+    Saves coeval boxes (brightness temperature and xh_boxes) and corresponding
+    wedge-filtered coeval boxes to an h5py dataset.
+    ----------
+    Params:
+    :filename: Filepath of saved data.
+    :data:     All datasets to store (eg. brightness temperature boxes)
+    :attrs:    Optional (small) data to be stored as h5py Attribute.
+    """
+
+    with h5py.File(filename, "w") as hf:
+
+        # Save datasets
+        for k, v in data.items():
+            hf.create_dataset(k, data=v)
+
+        # Save attributes
+        if attrs is not None:
+            for k, v in attrs.items():
+                hf.attrs[k] = str(v)
+
+    # On success
+    LOGGER.info("\n----------\n")
+    LOGGER.info(f"h5py file created at {filename}")
+    LOGGER.info("Contents:")
+    for k in data.keys():
+        LOGGER.info("\t'{}', shape: {}".format(k, data[k].shape))
+    LOGGER.info("Attributes:")
+    for k in attrs.keys():
+        LOGGER.info("\t'{}': {}".format(k, attrs[k]))
+    LOGGER.info("\n----------\n")
