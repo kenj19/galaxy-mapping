@@ -45,18 +45,19 @@ for i in range(num_rseeds):
 
     order = np.arange(num_z)
 
-    if shuffled:
+    if shuffle:
 
         random.shuffle(order)
 
     DM = DataManager(fname_coeval_boxes[i])
+    print(DM.data['wedge_filtered_brightness_temp_boxes'].shape)
     
     new_wedge_filtered_bt_boxes[indices[i]:indices[i+1]] = DM.data["wedge_filtered_brightness_temp_boxes"][order]
     new_bt_boxes[indices[i]:indices[i+1]] = DM.data["brightness_temp_boxes"][order]
     new_ion_boxes[indices[i]:indices[i+1]] = DM.data["ionized_boxes"][order]
     redshifts[indices[i]:indices[i+1]] = DM.data["redshifts"][order]
    
-DM.dset_attrs = {'p21c_initial_conditions': f"{'user_params': {'HII_DIM': {HII_DIM}, 'BOX_LEN': {BOX_LEN}}, 'random_seed': variable}"}
+DM.dset_attrs = {'p21c_initial_conditions': "{'user_params': {'HII_DIM': 128, 'BOX_LEN': 128}, 'random_seed': variable}"}
 DM.data = {'brightness_temp_boxes': new_bt_boxes, 'ionized_boxes': new_ion_boxes, 'redshifts': redshifts, 
           'wedge_filtered_brightness_temp_boxes': new_wedge_filtered_bt_boxes}
 DM.filepath = fname_save

@@ -13,6 +13,7 @@ Functions are imported into other modules.
 
 import h5py
 import numpy as np
+from typing import Optional, List
 
 def binarize_boxes(xH_boxes, cutoff=0.9): # binarize ionized boxes, neutral maps to 1, ionized to 0
     
