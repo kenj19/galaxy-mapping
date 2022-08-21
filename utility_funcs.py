@@ -1,3 +1,16 @@
+'''
+
+Author: Jacob Kennedy (jacob.kennedy@mail.mcgill.ca)
+
+Created On: August 20 2022
+
+Description:
+
+Functions used to compute halo fields, analyze halo populations and ionization fields.
+Functions are imported into other modules. 
+
+'''
+
 import h5py
 import numpy as np
 
@@ -27,7 +40,7 @@ def binarize_boxes(xH_boxes, cutoff=0.9): # binarize ionized boxes, neutral maps
         
     return binarized_boxes
     
-def get_n_i_halo_mass_coords(halocoords, halomasses, gt_ionizedbox, pred_ionizedbox, save_name, scale=3):
+def get_n_i_halo_mass_coords(halocoords, halomasses, gt_ionizedbox, pred_ionizedbox, rseed, save_name, scale=3):
     
     '''
     Function to find the halo coordinates and masses of halos 
@@ -44,13 +57,13 @@ def get_n_i_halo_mass_coords(halocoords, halomasses, gt_ionizedbox, pred_ionized
     save_name:
             Name to save .h5 to.
     scale:
-            DIM//HII_DIM, default = 3.
+            DIM//HII_DIM (int), default = 3.
     ------------------------------------------------------------------------------
     ''' 
      
     # Need to scale down dim from high to low res
     halo_low_res_coords = halocoords // scale
-    num_halos = len(halo_masses)
+    num_halos = len(halomasses)
     
     # Maximum number of each class of halos is num_halos
     pred_neutral_halo_coords = np.zeros(shape=(num_halos, 3))
@@ -136,7 +149,7 @@ def get_n_i_halo_mass_coords(halocoords, halomasses, gt_ionizedbox, pred_ionized
     hf.create_dataset('gt_ionized_halo_masses', data=gt_ionized_halo_masses)
     hf.create_dataset('gt_neutral_halo_coords', data=gt_neutral_halo_coords)
     hf.create_dataset('gt_ionized_halo_coords', data=gt_ionized_halo_coords)
-    hf.create_dataset('random_seed', data=seed)
+    hf.create_dataset('random_seed', data=rseed)
     
     print(f"\n ======= All datasets created, saved to {save_name}. ======= \n")
 
