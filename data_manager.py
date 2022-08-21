@@ -5,6 +5,7 @@ Script for saving/loading h5 datafiles
 
 import h5py
 import numpy as np
+from pprint import pprint
 
 class DataManager():
 
