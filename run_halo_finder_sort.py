@@ -25,7 +25,7 @@ fname_coeval_boxes= '/Users/kennedyj/PHYS_459/data/coeval_boxes/_128_128_rseed_v
 DM = DataManager(fname_coeval_boxes)
 xH_boxes_pred = binarize_boxes(DM.data["predicted_brightness_temp_boxes"])
 xH_boxes_gt = binarize_boxes(DM.data["ionized_boxes"])
-rseeds = DM.metadata['random_seed'].split()
+rseeds = DM.dset_attrs['random_seed'].split()
 redshifts = DM.data['redshifts']
 num_rseeds = len(rseeds)
 
