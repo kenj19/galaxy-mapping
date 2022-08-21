@@ -21,8 +21,7 @@ from data_manager import DataManager
 from utility_funcs import (binarize_boxes, get_n_i_halo_mass_coords)
 
 # Load in coeval boxes
-fname_coeval_boxes='/Users/kennedyj/PHYS_459/data/coeval_boxes/_128_128_rseed_variable_Jun27_results.h5'
-#save_name = '/Users/kennedyj/PHYS_459/data/halo_masses_coords/HII_DIM_128_BOX_LEN_128_rseed_variable_halos.h5'
+fname_coeval_boxes= '/Users/kennedyj/PHYS_459/data/coeval_boxes/_128_128_rseed_variable_Jun27_results.h5'
 DM = DataManager(fname_coeval_boxes)
 xH_boxes_pred = binarize_boxes(DM.data["predicted_brightness_temp_boxes"])
 xH_boxes_gt = binarize_boxes(DM.data["ionized_boxes"])
