@@ -182,12 +182,12 @@ def save_dset_to_hf(filename: str, data: dict,
                 hf.attrs[k] = str(v)
 
     # On success
-    LOGGER.info("\n----------\n")
-    LOGGER.info(f"h5py file created at {filename}")
-    LOGGER.info("Contents:")
+    print("\n----------\n")
+    print(f"h5py file created at {filename}")
+    print("Contents:")
     for k in data.keys():
-        LOGGER.info("\t'{}', shape: {}".format(k, data[k].shape))
-    LOGGER.info("Attributes:")
+        print("\t'{}', shape: {}".format(k, data[k].shape))
+    print("Attributes:")
     for k in attrs.keys():
-        LOGGER.info("\t'{}': {}".format(k, attrs[k]))
-    LOGGER.info("\n----------\n")
+        print("\t'{}': {}".format(k, attrs[k]))
+    print("\n----------\n")
