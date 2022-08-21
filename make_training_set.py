@@ -19,7 +19,7 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Optional, List
-from data_manager2 import DataManager
+from data_manager import DataManager
 from utility_funcs import save_dset_to_hf
 
 # Random seeds of 21cmFAST fields, number of redshifts per random seed

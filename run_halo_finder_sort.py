@@ -17,7 +17,7 @@ import h5py
 import numpy as np
 import py21cmfast as p21c
 import matplotlib.pyplot as plt
-from data_manager2 import DataManager
+from data_manager import DataManager
 from utility_funcs import (binarize_boxes, get_n_i_halo_mass_coords)
 
 # Load in coeval boxes

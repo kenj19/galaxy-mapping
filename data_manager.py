@@ -7,59 +7,55 @@ import h5py
 import numpy as np
 from pprint import pprint
 
-class DataManager():
+class DataManager:
 
     """
-    Loads data from h5py file. Once a DataManager object is loaded, you can
-    access the data like so:
-         ... = DM.data["wedge_filtered_brightness_temp_boxes"]
-         ... = DM.data["brightness_temp_boxes"]
-         ... = DM.data["ionized_boxes"]
-         ... = DM.data["redshifts"]
-         ... = DM.data["predicted_brightness_temp_boxes"]
-    Metadata is stored in DM.metadata
+    Loads data from h5py file. Datasets from the h5py file are stored in the
+    DataManager.data dictionary. Data from h5py Groups are store in the
+    DataManager.metadata dictionary. 
+    ----------
+    Attributes
+    :filepath:   (str) Name of h5py file.
+    :data:       (dict) All h5py Datasets (retrieved as numpy arrays) loaded 
+                        from the h5py file. 
+    :dset_attrs: (dict) Stores h5py datafile attributes.
+    :metadata:   (dict) Stores h5py Group data (retrieved as numpy arrays).
     """
 
     def __init__(self, filepath: str):
         assert filepath[-3:] == ".h5", "filepath must point to an h5 file."
 
         self.filepath = filepath
-        self.metadata = {}
         self.data = {}
+        self.dset_attrs = {}
+        self.metadata = {}
 
         self.load_data_from_h5()
         
-
     def load_data_from_h5(self):
-        """
-        Loads coeval boxes from h5py file. Assumes h5py file has 5 datasets,
-        'brightness_temp_boxes' -- ground truth brightness temp boxes 
-        'wedge_filtered_brightness_temp_boxes' -- brightness temp boxes minus wedge
-        'predicted_brightness_temp_boxes' -- predicted brightness temp from model
-        'ionized_boxes' -- ionized boxes corresponding to brightness temp box
-        'redshifts' --> redshift of each brightness temp box
-        """
+        """Loads all data from h5 file into numpy arrays"""
 
         with h5py.File(self.filepath, "r") as hf:
 
-            # Check we have the required datasets
-            datasets = list(hf.keys())
-            assert "wedge_filtered_brightness_temp_boxes" in datasets and \
-                   "brightness_temp_boxes" in datasets and \
-                   "predicted_brightness_temp_boxes" in datasets and \
-                   "ionized_boxes" in datasets and \
-                   "redshifts" in datasets, \
-                   "Failed to extract datasets from h5py file."
-
             for k in hf.keys():
-                v = np.array(hf[k][:], dtype=np.float32)
-                assert np.isnan(np.sum(v)) == False
-                self.data[k] = v
-            self.data["redshifts"].reshape(-1) 
+
+                # AstroParams are stored in an h5py group
+                if isinstance(hf[k], h5py.Group):
+                    self.metadata[k] = {}
+                    for k2 in hf[k].keys():
+                        v = np.array(hf[k][k2], dtype=np.float32)
+                        self.metadata[k][k2] = v
+
+                # Lightcone data is stored as h5py datasets
+                if isinstance(hf[k], h5py.Dataset):
+                    v = np.array(hf[k][:], dtype=np.float32)
+                    #assert np.isnan(np.sum(v)) is False, \
+                          # f"Error, {k} has nan values."
+                    self.data[k] = v
 
             # Load metadata from h5 file
             for k, v in hf.attrs.items():
-                self.metadata[k] = v
+                self.dset_attrs[k] = v
 
         # Print success message
         print("\n----------\n")
@@ -68,5 +64,10 @@ class DataManager():
         for k, v in self.data.items():
             print("\t{}, shape: {}".format(k, v.shape))
         print("\nMetadata:")
-        pprint(self.metadata)
+        for k in self.metadata.keys():
+            print(f"\t{k}")
+        print("\n----------\n")
+        print("\nDataset Attributes:")
+        for k in self.dset_attrs.keys():
+            print(f"\t{k}")
         print("\n----------\n")
