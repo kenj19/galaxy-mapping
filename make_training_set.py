@@ -32,7 +32,6 @@ fname_coeval_boxes=['/Users/kennedyj/PHYS_459/Github/wedge-repos/outputs/coeval_
 fname_save = f'/Users/kennedyj/PHYS_459/Github/wedge-repos/outputs/coeval_boxes/128/HII_DIM_{HII_DIM}_BOX_LEN_{BOX_LEN}_{num_rseeds*num_z}_boxes_training_set.h5'
 shuffle = True # Shuffle redshift order for each random seed
 
-
 # Arrays to cast boxes into
 new_bt_boxes = np.zeros((num_rseeds*num_z, HII_DIM, HII_DIM, HII_DIM)) 
 new_ion_boxes = np.zeros((num_rseeds*num_z, HII_DIM, HII_DIM, HII_DIM)) 
