@@ -14,10 +14,12 @@ import numpy as np
 import astropy.units as u
 import matplotlib.pyplot as plt
 
-def L_to_MAB(L, cm_per_pc, flux_AB):
+def L_to_MAB(L):
     """
     Convert luminosities to absolute magnitudes.
     """
+    cm_per_pc = 3.08568e18
+    flux_AB = 3631. * 1e-23 # erg / s / cm**2 / Hz
     d10 = 10 * cm_per_pc  # 10pc in cm
 
     return -2.5 * np.log10(L / 4. / np.pi / d10**2 / flux_AB)

@@ -20,29 +20,7 @@ import matplotlib.pyplot as plt
 from utility_funcs import (L_to_MAB, get_mag_app)
 from astropy.cosmology import FlatLambdaCDM
 
-
 print(f"\n ============= Using 21cmFAST version {p21c.__version__} ============== \n")
-
-# Conversion functions for luminosity and magnitudes
-def L_to_MAB(L):
-
-	"""
-	Convert luminosities to absolute magnitudes.
-	"""
-
-	d10 = 10 * cm_per_pc # 10pc in cm
-
-	return -2.5 * np.log10(L / 4. / np.pi / d10**2 / flux_AB)
-
-def get_mag_app(z, mags, cosmo_model):
-
-	"""
-	Convert absolute magnitudes to apparent magnitudes.
-	"""
-
-	d_pc = 1e6*cosmo_model.luminosity_distance(z) / u.Mpc
-
-	return mags + 5 * np.log10(d_pc / 10.) - 2.5 * np.log10(1. + z)
 
 # Load in data
 fname_zs = 'comoving_dist_redshift_conversion_BOX_LEN_128_zs_3.h5'
@@ -69,8 +47,6 @@ init_cond = p21c.initial_conditions(user_params=user_params,
 
 # Generate cosmological model
 cosmo = FlatLambdaCDM(H0=67.32 * u.km / u.s / u.Mpc, Tcmb0=2.725 * u.K, Om0=0.3158)
-cm_per_pc = 3.08568e18
-flux_AB = 3631. * 1e-23 # erg / s / cm**2 / Hz
 
 # Load in galaxy luminosity-halo mass relation data, parse data
 Mh_ML_dat = np.loadtxt('/Users/kennedyj/PHYS_459/L1600_vs_Mh_and_z.dat').T
@@ -103,7 +79,7 @@ for redshift in redshifts:
 
 	# Convert halo masses to luminosities
 	Lumo = np.interp(halo_masses, xp = Mh, fp = L_1600_z8)
-	MAB = L_to_MAB(Lumo, cm_per_pc, flux_AB)
+	MAB = L_to_MAB(Lumo)
 	mAB = get_mag_app(redshift, MAB, cosmo)
 
 	# Apply magnitude cutoff for surveys, get halo field
