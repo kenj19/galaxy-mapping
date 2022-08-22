@@ -17,7 +17,9 @@ import numpy as np
 import py21cmfast as p21c
 import astropy.units as u
 import matplotlib.pyplot as plt
+from utility_funcs import (L_to_MAB, get_mag_app)
 from astropy.cosmology import FlatLambdaCDM
+
 
 print(f"\n ============= Using 21cmFAST version {p21c.__version__} ============== \n")
 
@@ -32,13 +34,13 @@ def L_to_MAB(L):
 
 	return -2.5 * np.log10(L / 4. / np.pi / d10**2 / flux_AB)
 
-def get_mag_app(z, mags):
+def get_mag_app(z, mags, cosmo_model):
 
 	"""
 	Convert absolute magnitudes to apparent magnitudes.
 	"""
 
-	d_pc = 1e6*cosmo.luminosity_distance(z) / u.Mpc
+	d_pc = 1e6*cosmo_model.luminosity_distance(z) / u.Mpc
 
 	return mags + 5 * np.log10(d_pc / 10.) - 2.5 * np.log10(1. + z)
 
@@ -67,16 +69,15 @@ init_cond = p21c.initial_conditions(user_params=user_params,
 
 # Generate cosmological model
 cosmo = FlatLambdaCDM(H0=67.32 * u.km / u.s / u.Mpc, Tcmb0=2.725 * u.K, Om0=0.3158)
-cm_per_pc = 3.08568e18
-flux_AB = 3631. * 1e-23 # erg / s / cm**2 / Hz
 
-# Load in galaxy luminosity-halo mass relation data
+# Load in galaxy luminosity-halo mass relation data, parse data
 Mh_ML_dat = np.loadtxt('/Users/kennedyj/PHYS_459/L1600_vs_Mh_and_z.dat').T
 Mh, L_1600_z6, L_1600_z7, L_1600_z8, L_1600_z9, L_1600_z10 = Mh_ML_dat
 
 # Define apparent magnitude cutoffs of surveys
 cutoffs = {'JWST-UD': 32, 'JWST-MD': 30.6, 'JWST-WF': 29.3, 'Roman': 26.5}
 
+# Loop through redshifts, generate halo fields and check if above thresholds
 for redshift in redshifts:
 
 	halo_field = p21c.determine_halo_list(redshift=redshift,
@@ -85,6 +86,8 @@ for redshift in redshifts:
 			
 	halo_coords = halo_field.halo_coords // int(DIM//HII_DIM) # DIM//HII_DIM gives scale
 	halo_masses = halo_field.halo_masses
+	#halo_mass_bins = halo_field.mass_bins
+
 	print(f"\n ====== Num Halos @ {redshift}: {len(halo_coords)} ====== \n")
 
 	if gen_field:
@@ -99,7 +102,7 @@ for redshift in redshifts:
 	# Convert halo masses to luminosities
 	Lumo = np.interp(halo_masses, xp = Mh, fp = L_1600_z8)
 	MAB = L_to_MAB(Lumo)
-	mAB = get_mag_app(redshift, MAB)
+	mAB = get_mag_app(redshift, MAB, cosmo)
 
 	# Apply magnitude cutoff for surveys, get halo field
 	JWST_UD_gals = np.zeros(shape=(HII_DIM,HII_DIM,HII_DIM))
@@ -151,35 +154,3 @@ for redshift in redshifts:
 	hf.close()
 	
 	print(f'\n ====== File {fname_save} saved ====== \n')
-
-
-# Plot the galaxy field overtop the ionization field
-
-def plot_slice_gals(box, ax=None, fig=None):
-	''' plot_slice(bt_boxes[0]) '''
-	kwargs={'origin': 'lower', 'aspect': 'auto', 'cmap': 'Reds'}
-	if ax is None:
-		fig,ax=plt.subplots(1, figsize=[5,5])
-	trans_slice = np.take(box, 0, axis=0) #mpc_slice_index[i]
-	im=ax.imshow(trans_slice, **kwargs)
-	fig.colorbar(mappable=im,ax=ax)
-	#ax.set_ylabel('Mpc', fontsize=15)
-	#ax.set_xlabel('Mpc', fontsize=15)
-	return im
-
-def plot_slice(box, ax=None, fig=None):
-	''' plot_slice(bt_boxes[0]) '''
-	kwargs={'origin': 'lower', 'aspect': 'auto', 'cmap': 'binary'}
-	if ax is None:
-		fig,ax=plt.subplots(1, figsize=[5,5])
-	trans_slice = np.take(box, 0, axis=0) #mpc_slice_index[i]
-	im=ax.imshow(trans_slice, **kwargs)
-	#ax.set_ylabel('Mpc', fontsize=15)
-	#ax.set_xlabel('Mpc', fontsize=15)
-	return im
-	
-#fig, ax = plt.subplots(1, figsize=[6,6])
-#plot_slice_gals(JWST_UD_gals,ax=ax,fig=fig)
-#plot_slice(xH_box, ax=ax, fig=fig)
-#plt.show()
-#fig.savefig('test_plot_jun29.jpeg');
