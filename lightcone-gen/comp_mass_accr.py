@@ -65,7 +65,7 @@ rects2 = ax.bar(x + width/2, interp_gal_counts, width, label='Interp')
 # Add some text for labels, title and custom x-axis tick labels, etc.
 plt.ylabel(r'$m_{AB, gal} > m_{AB, survey}$')
 plt.xticks(x, labels)
-plt.xscale('log')
+plt.yscale('log')
 plt.legend()
 
 plt.bar_label(rects1, padding=3)
