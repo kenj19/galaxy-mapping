@@ -26,10 +26,11 @@ from utility_funcs import save_dset_to_hf
 rseeds = np.array([33255, 727602, 804489, 326134, 113527, 880855, 283828])
 num_rseeds = len(rseeds)
 HII_DIM = 128
-BOX_LEN = 128
-num_z = 8
-fname_coeval_boxes=['/Users/kennedyj/PHYS_459/Github/wedge-repos/outputs/coeval_boxes/128/HII_DIM_128_BOX_LEN_128_8_zs_rseed_{}.h5'.format(i) for i in rseeds]
-fname_save = f'/Users/kennedyj/PHYS_459/Github/wedge-repos/outputs/coeval_boxes/128/HII_DIM_{HII_DIM}_BOX_LEN_{BOX_LEN}_{num_rseeds*num_z}_boxes_training_set.h5'
+BOX_LEN = 300
+DIM = 200
+num_z = 7
+fname_coeval_boxes=['/Users/kennedyj/PHYS_459/Github/wedge-repos/outputs/coeval_boxes/HII_DIM_128_DIM_200_BOX_LEN_300_fixed_angle_bar_max_20_zs_7_rseed_{}.h5'.format(i) for i in rseeds]
+fname_save = f'/Users/kennedyj/PHYS_459/Github/wedge-repos/outputs/coeval_boxes/HII_DIM_{HII_DIM}_DIM_{DIM}_BOX_LEN_{BOX_LEN}_{num_rseeds*num_z}_boxes_training_set.h5'
 shuffle = True # Shuffle redshift order for each random seed
 
 # Arrays to cast boxes into
@@ -56,7 +57,7 @@ for i in range(num_rseeds):
     new_ion_boxes[indices[i]:indices[i+1]] = DM.data["ionized_boxes"][order]
     redshifts[indices[i]:indices[i+1]] = DM.data["redshifts"][order]
    
-DM.dset_attrs = {'p21c_initial_conditions': "{'user_params': {'HII_DIM': 128, 'BOX_LEN': 128}, 'random_seed': variable}"}
+DM.dset_attrs = {'p21c_initial_conditions': "{'user_params': {'HII_DIM': 128, 'BOX_LEN': 300, 'DIM': 200}, 'random_seed': variable}"}
 DM.data = {'brightness_temp_boxes': new_bt_boxes, 'ionized_boxes': new_ion_boxes, 'redshifts': redshifts, 
           'wedge_filtered_brightness_temp_boxes': new_wedge_filtered_bt_boxes}
 DM.filepath = fname_save
