@@ -19,8 +19,6 @@ from get_mar import calc_mass_accr
 from utility_funcs import (L_to_MAB, get_mag_app)
 from astropy.cosmology import FlatLambdaCDM
 
-print(f"\n ============= Using 21cmFAST version {p21c.__version__} ============== \n")
-
 # Load in data
 fname_zs = 'comoving_dist_redshift_conversion_BOX_LEN_128_zs_3.h5'
 hf1 = h5py.File(fname_zs,'r')
@@ -34,7 +32,7 @@ DIM = HII_DIM*3
 rseed=42142
 
 # Load in halo mass field at high_z to add mass to
-fname_cutoffs = f'galaxy_cutoffs_HII_DIM_{HII_DIM}_DIM_{DIM}_BOXLEN_{BOX_LEN}_z_{high_z}_rseed_{rseed}.h5'
+fname_cutoffs = f'/Users/kennedyj/PHYS_459/lc-gen-gal-cutoffs/galaxy_cutoffs_HII_DIM_{HII_DIM}_DIM_{DIM}_BOXLEN_{BOX_LEN}_z_{high_z}_rseed_{rseed}.h5'
 hf2 = h5py.File(fname_cutoffs, 'r')
 halo_mass_bins, halo_mass_field = np.array(hf2['halo_mass_bins']), np.array(hf2['halo_mass_field'])
 hf2.close()
@@ -58,7 +56,7 @@ interp_halo_mass_field = halo_mass_field + halo_mass_field_accr
 # Convert halo masses to luminosities
 Lumo = np.interp(interp_halo_mass_field, xp = Mh, fp = L_1600_z8)
 MAB = L_to_MAB(Lumo)
-mAB = get_mag_app(redshift, MAB, cosmo)
+mAB = get_mag_app(low_z, MAB, cosmo) # mAB at interpolation redshift
 
 JWST_UD_gals = interp_halo_mass_field[mAB<cutoffs['JWST-UD']]
 JWST_MD_gals = interp_halo_mass_field[mAB<cutoffs['JWST-MD']]
