@@ -64,7 +64,7 @@ for redshift in redshifts:
 			
 	halo_coords = halo_field.halo_coords // int(DIM//HII_DIM) # DIM//HII_DIM gives scale
 	halo_masses = halo_field.halo_masses
-	#halo_mass_bins = halo_field.mass_bins
+	halo_mass_bins = halo_field.mass_bins
 
 	print(f"\n ====== Num Halos @ {redshift}: {len(halo_coords)} ====== \n")
 
@@ -82,7 +82,8 @@ for redshift in redshifts:
 	MAB = L_to_MAB(Lumo)
 	mAB = get_mag_app(redshift, MAB, cosmo)
 
-	# Apply magnitude cutoff for surveys, get halo field
+	# Apply magnitude cutoff for surveys, get halo fields
+	halo_mass_field = np.zeros(shape=(HII_DIM,HII_DIM,HII_DIM)) # to be used for mass accretion addition
 	JWST_UD_gals = np.zeros(shape=(HII_DIM,HII_DIM,HII_DIM))
 	JWST_MD_gals = np.zeros(shape=(HII_DIM,HII_DIM,HII_DIM))
 	JWST_WF_gals = np.zeros(shape=(HII_DIM,HII_DIM,HII_DIM))
@@ -98,10 +99,11 @@ for redshift in redshifts:
 	JWST_WF_gal_masses = halo_masses[mAB<cutoffs['JWST-WF']]
 	Roman_gal_masses = halo_masses[mAB<cutoffs['Roman']]
 
-	for i in range(len(JWST_UD_gal_coords)): # JWST-UD is dimmest threshold, thus highest number of gals
+	for i in range(len(halo_masses)): 
 
 		if i < len(Roman_gal_coords):
 
+            halo_mass_field[tuple(halo_coords[i])] += halo_masses[i]
 			JWST_UD_gals[tuple(JWST_UD_gal_coords[i])] += JWST_UD_gal_masses[i]
 			JWST_MD_gals[tuple(JWST_MD_gal_coords[i])] += JWST_MD_gal_masses[i]
 			JWST_WF_gals[tuple(JWST_WF_gal_coords[i])] += JWST_WF_gal_masses[i]
@@ -109,22 +111,32 @@ for redshift in redshifts:
 
 		elif i < len(JWST_WF_gal_coords):
 
+			halo_mass_field[tuple(halo_coords[i])] += halo_masses[i]
 			JWST_UD_gals[tuple(JWST_UD_gal_coords[i])] += JWST_UD_gal_masses[i]
 			JWST_MD_gals[tuple(JWST_MD_gal_coords[i])] += JWST_MD_gal_masses[i]
 			JWST_WF_gals[tuple(JWST_WF_gal_coords[i])] += JWST_WF_gal_masses[i]
 
 		elif i < len(JWST_MD_gal_coords):
 
+			halo_mass_field[tuple(halo_coords[i])] += halo_masses[i]
 			JWST_UD_gals[tuple(JWST_UD_gal_coords[i])] += JWST_UD_gal_masses[i]
 			JWST_MD_gals[tuple(JWST_MD_gal_coords[i])] += JWST_MD_gal_masses[i]
 
+		elif i < len(JWST_UD_gal_coords):
+
+			halo_mass_field[tuple(halo_coords[i])] += halo_masses[i]
+			JWST_UD_gals[tuple(JWST_UD_gal_coords[i])] += JWST_UD_gal_masses[i]
+
 		else:
 
-			JWST_UD_gals[tuple(JWST_UD_gal_coords[i])] += JWST_UD_gal_masses[i]
+			halo_mass_field[tuple(halo_coords[i])] += halo_masses[i]
+
 	
 	fname_save = f'galaxy_cutoffs_HII_DIM_{HII_DIM}_DIM_{DIM}_BOXLEN_{BOX_LEN}_z_{redshift}_rseed_{rseed}.h5'
 	
 	hf = h5py.File(fname_save, 'w')
+	hf.create_dataset('halo_mass_bins', data=halo_mass_bins)
+	hf.create_dataset('halo_mass_field', data=halo_mass_field)
 	hf.create_dataset('JWST_UD_gals', data=JWST_UD_gals)
 	hf.create_dataset('JWST_MD_gals', data=JWST_MD_gals)
 	hf.create_dataset('JWST_WF_gals', data=JWST_WF_gals)
