@@ -58,10 +58,18 @@ Lumo = np.interp(interp_halo_mass_field, xp = Mh, fp = L_1600_z8)
 MAB = L_to_MAB(Lumo)
 mAB = get_mag_app(low_z, MAB, cosmo) # mAB at interpolation redshift
 
-JWST_UD_gals = interp_halo_mass_field[mAB<cutoffs['JWST-UD']]
-JWST_MD_gals = interp_halo_mass_field[mAB<cutoffs['JWST-MD']]
-JWST_WF_gals = interp_halo_mass_field[mAB<cutoffs['JWST-WF']]
-Roman_gals = interp_halo_mass_field[mAB<cutoffs['Roman']]
+# Copy interp halo mass field, zero out galaxies dimmer than survey threshold
+JWST_UD_gals = np.copy(interp_halo_mass_field)
+JWST_UD_gals[mAB > cutoffs['JWST-UD']] = 0
+JWST_MD_gals = np.copy(interp_halo_mass_field)
+JWST_MD_gals[mAB > cutoffs['JWST-MD']] = 0
+JWST_WF_gals = np.copy(interp_halo_mass_field)
+JWST_WF_gals[mAB > cutoffs['JWST-WF']] = 0
+Roman_gals = np.copy(interp_halo_mass_fields)
+Roman_gals[mAB > cutoffs['Roman']] = 0
+
+print(f"\n ====== Number of observable galaxies in each survey (JWST-UD, JWST-MD, JWST-WF, Roman): \
+	({np.count_nonzero(JWST_UD_gals)},{np.count_nonzero(JWST_MD_gals)},{np.count_nonzero(JWST_WF_gals)},{np.count_nonzero(Roman_gals)}) ====== \n")
 
 fname_save = f'/Users/kennedyj/PHYS_459/lc-gen-gal-cutoffs/interp_galaxy_cutoffs_HII_DIM_{HII_DIM}_DIM_{DIM}_BOXLEN_{BOX_LEN}_z_{low_z}_rseed_{rseed}.h5'
 	
