@@ -103,7 +103,7 @@ for redshift in redshifts:
 
 		if i < len(Roman_gal_coords):
 
-            halo_mass_field[tuple(halo_coords[i])] += halo_masses[i]
+                        halo_mass_field[tuple(halo_coords[i])] += halo_masses[i]
 			JWST_UD_gals[tuple(JWST_UD_gal_coords[i])] += JWST_UD_gal_masses[i]
 			JWST_MD_gals[tuple(JWST_MD_gal_coords[i])] += JWST_MD_gal_masses[i]
 			JWST_WF_gals[tuple(JWST_WF_gal_coords[i])] += JWST_WF_gal_masses[i]
@@ -132,7 +132,7 @@ for redshift in redshifts:
 			halo_mass_field[tuple(halo_coords[i])] += halo_masses[i]
 
 	
-	fname_save = f'galaxy_cutoffs_HII_DIM_{HII_DIM}_DIM_{DIM}_BOXLEN_{BOX_LEN}_z_{redshift}_rseed_{rseed}.h5'
+	fname_save = f'/Users/kennedyj/PHYS_459/lc-gen-gal-cutoffs/galaxy_cutoffs_HII_DIM_{HII_DIM}_DIM_{DIM}_BOXLEN_{BOX_LEN}_z_{redshift}_rseed_{rseed}.h5'
 	
 	hf = h5py.File(fname_save, 'w')
 	hf.create_dataset('halo_mass_bins', data=halo_mass_bins)
