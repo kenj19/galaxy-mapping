@@ -17,9 +17,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load in halo mass fields
-interp_z
-fname_true = ''
-fname_interp = ''
+interp_z = 7.997138310109906
+fname_true = '/Users/kennedyj/PHYS_459/lc-gen-gal-cutoffs/galaxy_cutoffs_HII_DIM_128_DIM_384_BOXLEN_128_z_7.997138310109906_rseed_42142.h5'
+fname_interp = '/Users/kennedyj/PHYS_459/lc-gen-gal-cutoffs/interp_galaxy_cutoffs_HII_DIM_128_DIM_384_BOXLEN_128_z_7.997138310109906_rseed_42142.h5'
 hf_truth = h5py.File(fname_true, 'r')
 hf_interp = h5py.File(fname_interp, 'r')
 
@@ -29,7 +29,7 @@ JWST_MD_gals_true = np.array(hf_truth['JWST_MD_gals'])
 JWST_WF_gals_true = np.array(hf_truth['JWST_WF_gals'])
 Roman_gals_true = np.array(hf_truth['Roman_gals'])
 
-halo_mass_field_interp = np.array(hf_interp['interp_halo_mass_field'])
+halo_mass_field_interp = np.array(hf_interp['inter_halo_mass_field'])
 JWST_UD_gals_interp = np.array(hf_interp['JWST_UD_gals'])
 JWST_MD_gals_interp = np.array(hf_interp['JWST_MD_gals'])
 JWST_WF_gals_interp = np.array(hf_interp['JWST_WF_gals'])
@@ -63,14 +63,12 @@ rects1 = ax.bar(x - width/2, true_gal_counts, width, label='True')
 rects2 = ax.bar(x + width/2, interp_gal_counts, width, label='Interp')
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
-ax.set_ylabel(r'$m_{AB, gal} > m_{AB, survey}$')
-ax.set_xticks(x, labels)
-ax.legend()
+plt.ylabel(r'$m_{AB, gal} > m_{AB, survey}$')
+plt.xticks(x, labels)
+plt.legend()
 
-ax.bar_label(rects1, padding=3)
-ax.bar_label(rects2, padding=3)
+plt.bar_label(rects1, padding=3)
+plt.bar_label(rects2, padding=3)
 
 fig.tight_layout()
-plt.show()
-plt.savefig(f'compare_interp_@_z_{interp_z}.jpeg')
-
+plt.savefig(f'/Users/kennedyj/PHYS_459/lc-gen-gal-cutoffs/compare_interp_@_z_{interp_z}.jpeg')
