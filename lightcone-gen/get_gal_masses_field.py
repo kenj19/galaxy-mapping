@@ -24,9 +24,9 @@ print(f"\n ============= Using 21cmFAST version {p21c.__version__} =============
 
 # Load in data
 fname_zs = 'comoving_dist_redshift_conversion_BOX_LEN_128_zs_3.h5'
-hf = h5py.File(fname_zs,'r')
-BOX_LEN, redshifts = np.array(hf['BOX_LEN']), np.array(hf['redshifts'])
-hf.close()
+hf1 = h5py.File(fname_zs,'r')
+BOX_LEN, redshifts = np.array(hf1['BOX_LEN']), np.array(hf1['redshifts'])
+hf1.close()
 
 print(f'\n ====== BOX_LEN: {BOX_LEN} ====== \n \n ====== redshifts: {redshifts} ====== \n') 
 
@@ -134,13 +134,13 @@ for redshift in redshifts:
     
     fname_save = f'/Users/kennedyj/PHYS_459/lc-gen-gal-cutoffs/galaxy_cutoffs_HII_DIM_{HII_DIM}_DIM_{DIM}_BOXLEN_{BOX_LEN}_z_{redshift}_rseed_{rseed}.h5'
     
-    hf = h5py.File(fname_save, 'w')
-    hf.create_dataset('halo_mass_bins', data=halo_mass_bins)
-    hf.create_dataset('halo_mass_field', data=halo_mass_field)
-    hf.create_dataset('JWST_UD_gals', data=JWST_UD_gals)
-    hf.create_dataset('JWST_MD_gals', data=JWST_MD_gals)
-    hf.create_dataset('JWST_WF_gals', data=JWST_WF_gals)
-    hf.create_dataset('Roman_gals', data=Roman_gals)
-    hf.close()
+    hf2 = h5py.File(fname_save, 'w')
+    hf2.create_dataset('halo_mass_bins', data=halo_mass_bins)
+    hf2.create_dataset('halo_mass_field', data=halo_mass_field)
+    hf2.create_dataset('JWST_UD_gals', data=JWST_UD_gals)
+    hf2.create_dataset('JWST_MD_gals', data=JWST_MD_gals)
+    hf2.create_dataset('JWST_WF_gals', data=JWST_WF_gals)
+    hf2.create_dataset('Roman_gals', data=Roman_gals)
+    hf2.close()
     
     print(f'\n ====== File {fname_save} saved ====== \n')
